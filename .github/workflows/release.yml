@@ -1,0 +1,107 @@
+name: Release
+
+# Publishing is just pushing a tag: `git tag v1.2.0 && git push --tags`.
+# The version in the tag is what the app compares against, so keep it in step
+# with `version:` in pubspec.yaml. The workflow builds both platforms, attaches
+# them to a GitHub Release, and that release is the update the app sees.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build windows --release
+
+      # Upload the whole runner folder, not just the exe: the Flutter engine and
+      # the DLLs live beside it, and the updater copies the folder over itself.
+      - name: Package
+        shell: pwsh
+        run: |
+          $src = "build\windows\x64\runner\Release"
+          if (-not (Test-Path $src)) { throw "No release folder at $src" }
+          Compress-Archive -Path "$src\*" -DestinationPath "verbal-outlet-windows.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: verbal-outlet-windows.zip
+          if-no-files-found: error
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      # The version code must increase for Android to accept an install over
+      # the old one, so derive it from the tag: v1.2.0 -> 10200.
+      - name: Build APK
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          IFS='.' read -r major minor patch <<< "$TAG"
+          CODE=$((major * 10000 + minor * 100 + patch))
+          flutter build apk --release \
+            --build-name="$TAG" \
+            --build-number="$CODE"
+
+      - name: Package
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk verbal-outlet-android.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: verbal-outlet-android.apk
+          if-no-files-found: error
+
+  publish:
+    needs: [build-windows, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      # Fails loudly if the tag and pubspec disagree, since the app would then
+      # offer an update that re-offers itself forever.
+      - name: Check the tag matches pubspec
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//; s/+.*//')
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "Tag $TAG does not match pubspec version $VERSION" >&2
+            exit 1
+          fi
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: Verbal Outlet ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            artifacts/verbal-outlet-windows.zip
+            artifacts/verbal-outlet-android.apk
+          fail_on_unmatched_files: true

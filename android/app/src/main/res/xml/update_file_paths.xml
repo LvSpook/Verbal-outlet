@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The downloaded APK lives in the app's cache while the system installer
+     reads it. Only that one folder is shared, and only for this purpose. -->
+<paths>
+    <cache-path name="updates" path="updates/" />
+</paths>

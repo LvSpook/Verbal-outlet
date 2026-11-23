@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Icon for the "New thought" launcher shortcut.
+
+  A speech bubble over the app's deep-blue field with the cyan accent, so the
+  shortcut reads as part of Verbal Outlet rather than a stock Android glyph.
+  Vector rather than a bitmap, so it is crisp at every launcher density.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- The bubble: rounded body with a tail at the lower left. -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M4,3.5h16a2,2 0 0 1 2,2v9a2,2 0 0 1 -2,2h-6.4l-4.1,3.9a1,1 0 0 1 -1.7,-0.7v-3.2h-3.8a2,2 0 0 1 -2,-2v-9a2,2 0 0 1 2,-2z" />
+    <!-- Three dots, the "adding a thought" mark used in the app. -->
+    <path
+        android:fillColor="#0A1622"
+        android:pathData="M7.5,10m-1.3,0a1.3,1.3 0 1 0 2.6,0a1.3,1.3 0 1 0 -2.6,0" />
+    <path
+        android:fillColor="#0A1622"
+        android:pathData="M12,10m-1.3,0a1.3,1.3 0 1 0 2.6,0a1.3,1.3 0 1 0 -2.6,0" />
+    <path
+        android:fillColor="#0A1622"
+        android:pathData="M16.5,10m-1.3,0a1.3,1.3 0 1 0 2.6,0a1.3,1.3 0 1 0 -2.6,0" />
+</vector>

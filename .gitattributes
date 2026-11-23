@@ -1,0 +1,16 @@
+# Normalise line endings in the repository so a checkout on Linux (the Android
+# CI runner) and Windows (the Windows runner) sees the same bytes.
+
+* text=auto eol=lf
+
+# Windows batch files need CRLF to run reliably in cmd.exe.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets, never converted.
+*.png binary
+*.jpg binary
+*.ico binary
+*.ttf binary
+*.zip binary
+*.apk binary
