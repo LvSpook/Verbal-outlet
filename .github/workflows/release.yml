@@ -47,7 +47,9 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          # AGP 9's lint calls JDK 21 APIs (List.removeLast), so lint crashes on
+          # a 17 runtime even though the code itself targets Java 17.
+          java-version: '21'
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
