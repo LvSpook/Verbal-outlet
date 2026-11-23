@@ -16,7 +16,7 @@ import 'windows_installer.dart';
 
 /// The GitHub repository whose releases are this app's updates.
 const String updateRepoOwner = 'LvSpook';
-const String updateRepoName = 'verbal-outlet';
+const String updateRepoName = 'Verbal-outlet';
 
 /// Builds the controller for this platform.
 ///

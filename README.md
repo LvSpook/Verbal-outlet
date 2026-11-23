@@ -588,7 +588,7 @@ The app updates itself from this repository's GitHub Releases, with no store and
 no account.
 
 **Where it looks:** `lib/update/update_config.dart` holds the repository —
-currently `LvSpook/verbal-outlet`. If you fork this project, change
+currently `LvSpook/Verbal-outlet`. If you fork this project, change
 `updateRepoOwner` there to the account that owns your releases. A build pointed
 at a repository that does not exist fails quietly, and checks behave as "could
 not reach GitHub".
